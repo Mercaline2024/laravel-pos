@@ -13,20 +13,9 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'local'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Cloud Filesystem Disk
-    |--------------------------------------------------------------------------
-    |
-    | Many applications store files both locally and in the cloud. For this
-    | reason, you may specify a default "cloud" driver here. This driver
-    | will be bound as the Cloud disk implementation in the container.
-    |
-    */
-
-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+    'protected' => env('PROTECTED_FILESYSTEM_DISK', 'local_protected'),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +24,7 @@ return [
     |
     | Here you may configure as many filesystem "disks" as you wish, and you
     | may even configure multiple disks of the same driver. Defaults have
-    | been setup for each driver as an example of the required options.
+    | been set up for each driver as an example of the required values.
     |
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
@@ -45,14 +34,23 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root' => public_path('uploads'),
+            'url' => env('APP_URL').'/uploads',
+            'throw' => false,
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'root' => public_path('uploads'),
+            'url' => env('APP_URL').'/uploads',
             'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'local_protected' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'url' => env('APP_URL').'/uploads',
         ],
 
         's3' => [
@@ -63,6 +61,29 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
+            'visibility' => 'public',
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+        ],
+
+        's3_protected' => [
+            'driver' => 's3',
+            'key' => env('PRO_AWS_ACCESS_KEY_ID'),
+            'secret' => env('PRO_AWS_SECRET_ACCESS_KEY'),
+            'region' => env('PRO_AWS_DEFAULT_REGION'),
+            'bucket' => env('PRO_AWS_BUCKET'),
+            'url' => env('PRO_AWS_URL'),
+            'endpoint' => env('PRO_AWS_ENDPOINT'),
+        ],
+
+        's3_temp' => [
+            'driver' => 's3',
+            'key' => env('TEMP_AWS_ACCESS_KEY_ID'),
+            'secret' => env('TEMP_AWS_SECRET_ACCESS_KEY'),
+            'region' => env('TEMP_AWS_DEFAULT_REGION'),
+            'bucket' => env('TEMP_AWS_BUCKET'),
+            'url' => env('TEMP_AWS_URL'),
+            'endpoint' => env('TEMP_AWS_ENDPOINT'),
         ],
 
     ],
